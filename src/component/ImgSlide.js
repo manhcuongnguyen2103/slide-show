@@ -1,9 +1,12 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from "react";
 import Slider from "react-slick";
-import { Icon, Input, AutoComplete } from 'antd';
+import { Pagination  } from 'antd';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import _ from 'lodash';
+
+import myData from './all_imgs.js';
 
 export default class ImgSlide extends Component {
 
@@ -16,7 +19,11 @@ export default class ImgSlide extends Component {
       activeSlide2: 0,
       value: '',
       dataSource: [],
+      data:[],
+      show:[]
     };
+    this.state.data = _.chunk(myData,10)
+    this.state.show = this.state.data[0]
   }
 
   componentDidMount() {
@@ -32,236 +39,50 @@ export default class ImgSlide extends Component {
 
   componentWillUnmount() {
       document.removeEventListener("keydown", this.onKeyPressed.bind(this));
-  }    
-
-  resources =["ad.png",
-    "ae.png",
-    "af.png",
-    "ag.png",
-    "al.png",
-    "am.png",
-    "ao.png",
-    "ar.png",
-    "at.png",
-    "au.png",
-    "az.png",
-    "ba.png",
-    "bb.png",
-    "bd.png",
-    "be.png",
-    "bf.png",
-    "bg.png",
-    "bh.png",
-    "bi.png",
-    "bj.png",
-    "bn.png",
-    "bo.png",
-    "br.png",
-    "bs.png",
-    "bt.png",
-    "bw.png",
-    "by.png",
-    "bz.png",
-    "ca.png",
-    "cd.png",
-    "cf.png",
-    "cg.png",
-    "ch.png",
-    "ci.png",
-    "cl.png",
-    "cm.png",
-    "cn.png",
-    "co.png",
-    "cr.png",
-    "cu.png",
-    "cv.png",
-    "cy.png",
-    "cz.png",
-    "de.png",
-    "dj.png",
-    "dk.png",
-    "dm.png",
-    "do.png",
-    "dz.png",
-    "ec.png",
-    "ee.png",
-    "eg.png",
-    "eh.png",
-    "er.png",
-    "es.png",
-    "et.png",
-    "fi.png",
-    "fj.png",
-    "fm.png",
-    "fr.png",
-    "ga.png",
-    "gb.png",
-    "gd.png",
-    "ge.png",
-    "gh.png",
-    "gm.png",
-    "gn.png",
-    "gq.png",
-    "gr.png",
-    "gt.png",
-    "gw.png",
-    "gy.png",
-    "hn.png",
-    "hr.png",
-    "ht.png",
-    "hu.png",
-    "id.png",
-    "ie.png",
-    "il.png",
-    "in.png",
-    "iq.png",
-    "ir.png",
-    "is.png",
-    "it.png",
-    "jm.png",
-    "jo.png",
-    "jp.png",
-    "ke.png",
-    "kg.png",
-    "kh.png",
-    "ki.png",
-    "km.png",
-    "kn.png",
-    "kp.png",
-    "kr.png",
-    "ks.png",
-    "kw.png",
-    "kz.png",
-    "la.png",
-    "lb.png",
-    "lc.png",
-    "li.png",
-    "lk.png",
-    "lr.png",
-    "ls.png",
-    "lt.png",
-    "lu.png",
-    "lv.png",
-    "ly.png",
-    "ma.png",
-    "mc.png",
-    "md.png",
-    "me.png",
-    "mg.png",
-    "mh.png",
-    "mk.png",
-    "ml.png",
-    "mm.png",
-    "mn.png",
-    "mr.png",
-    "mt.png",
-    "mu.png",
-    "mv.png",
-    "mw.png",
-    "mx.png",
-    "my.png",
-    "mz.png",
-    "na.png",
-    "ne.png",
-    "ng.png",
-    "ni.png",
-    "nl.png",
-    "no.png",
-    "np.png",
-    "nr.png",
-    "nz.png",
-    "om.png",
-    "pa.png",
-    "pe.png",
-    "pg.png",
-    "ph.png",
-    "pk.png",
-    "pl.png",
-    "pt.png",
-    "pw.png",
-    "py.png",
-    "qa.png",
-    "ro.png",
-    "rs.png",
-    "ru.png",
-    "rw.png",
-    "sa.png",
-    "sb.png",
-    "sc.png",
-    "sd.png",
-    "se.png",
-    "sg.png",
-    "si.png",
-    "sk.png",
-    "sl.png",
-    "sm.png",
-    "sn.png",
-    "so.png",
-    "sr.png",
-    "st.png",
-    "sv.png",
-    "sy.png",
-    "sz.png",
-    "td.png",
-    "tg.png",
-    "th.png",
-    "tj.png",
-    "tl.png",
-    "tm.png",
-    "tn.png",
-    "to.png",
-    "tr.png",
-    "tt.png",
-    "tv.png",
-    "tw.png",
-    "tz.png",
-    "ua.png",
-    "ug.png",
-    "us.png",
-    "uy.png",
-    "uz.png",
-    "va.png",
-    "vc.png",
-    "ve.png",
-    "vn.png",
-    "vu.png",
-    "ws.png",
-    "ye.png",
-    "za.png",
-    "zm.png",
-    "zw.png"]
+  }     
   
   render() {
     const thumnailSetting = {
       className: "center",
       centerMode: true,
       infinite: true,
-      centerPadding: "50px",
+      centerPadding: "60px",
       slidesToShow: 9,
-      speed: 100,
+      speed: 10,
       arrows: false,
       slidesToScroll: 1,
+      responsive: [
+        {
+          breakpoint: 768,
+          settings: {
+            arrows: false,
+            centerMode: true,
+            centerPadding: '40px',
+            slidesToShow: 3
+          }
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            arrows: false,
+            centerMode: true,
+            centerPadding: '40px',
+            slidesToShow: 1
+          }
+        }
+      ]
     };
     
     const thumbPath = 'flags-mini/'
     const imgPath = 'flags-normal/'
 
-    const { dataSource, value } = this.state;
-
+    const { dataSource, value, data } = this.state;
+    
     return (
       <div  onKeyDown={this.onKeyPressed} tabIndex="0" >
-        <AutoComplete
-          dataSource={dataSource}
-          style={{ width: 200 }}
-          onSelect={this.onSelect}
-          onSearch={this.onSearch}
-          onChange={this.onChange}
-          placeholder="input here"
-        >
-        <Input suffix={<Icon type="search" className="certain-category-icon" />} />
-        </AutoComplete>
+        
         <h2>Slider Testing</h2>
-        <h4>{ this.resources[this.state.activeSlide]}</h4>
+
         <Slider
           asNavFor={this.state.nav2}
           ref={slider => (this.slider1 = slider)}
@@ -269,12 +90,18 @@ export default class ImgSlide extends Component {
           beforeChange = {(current, next) => this.setState({ activeSlide: next })}
           afterChange = {current => this.setState({ activeSlide2: current })}
         >
-           {this.resources.map(data => {
-                return <img src={imgPath + data}/>
+           {this.state.show.map(data => {
+                return (
+                  <div>
+                    <img src={data.img}/>
+                    <div>{data.title }</div>
+                    <div>{data.subTitle}</div>
+                    <div>{data.issueOn}</div>
+                  </div>
+                  )
             })}
          
         </Slider>
-        <h4>Thumbnail</h4>
         <Slider
           asNavFor={this.state.nav1}
           ref={slider => (this.slider2 = slider)}
@@ -282,13 +109,19 @@ export default class ImgSlide extends Component {
           focusOnSelect={true}
           {...thumnailSetting}
         >
-          {this.resources.map(data => {
-                return <img src={thumbPath + data}/>
+          {this.state.show.map(data => {
+                return <img src={data.thumb}/>
             })}
         </Slider>
+        <Pagination onChange={this.onPageChange} defaultCurrent={1} total={myData.length} />
       </div>
     );
   }
+
+  onPageChange=(page, pageSize) =>{
+    this.setState({show:this.state.data[page-1]})
+  }
+  
 
   onKeyPressed(e) {
     if(e.keyCode === 37){ //left

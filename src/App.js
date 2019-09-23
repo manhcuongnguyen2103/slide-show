@@ -11,9 +11,9 @@ function App() {
         <Header>Header</Header>
         <Content style={{minHeight: '80vh', backgroundColor: '#95b2f1'}}>
         <Row>
-          <Col span={8}></Col>
-          <Col span={8}><ImgSlide /></Col>
-          <Col span={8}></Col>
+          <Col span={6}></Col>
+          <Col span={12}><ImgSlide /></Col>
+          <Col span={6}></Col>
         </Row>
           
         </Content>
