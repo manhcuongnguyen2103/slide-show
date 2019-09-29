@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from "react";
 import Slider from "react-slick";
-import { Pagination  } from 'antd';
+import { Pagination, Input, message  } from 'antd';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import _ from 'lodash';
-
 import myData from './all_imgs.js';
+const { Search } = Input;
 
 export default class ImgSlide extends Component {
 
@@ -15,8 +15,10 @@ export default class ImgSlide extends Component {
     this.state = {
       nav1: null,
       nav2: null,
-      activeSlide: 0,
-      activeSlide2: 0,
+      activeSlide: 1,
+      activeSlide2: 2,
+      currentPage:1,
+      totalRecord:1,
       value: '',
       dataSource: [],
       data:[],
@@ -24,6 +26,7 @@ export default class ImgSlide extends Component {
     };
     this.state.data = _.chunk(myData,10)
     this.state.show = this.state.data[0]
+    this.state.totalRecord = myData.length
   }
 
   componentDidMount() {
@@ -76,59 +79,73 @@ export default class ImgSlide extends Component {
     const thumbPath = 'flags-mini/'
     const imgPath = 'flags-normal/'
 
-    const { dataSource, value, data } = this.state;
+    const { dataSource, value, data, nav1, nav2, activeSlide, activeSlide2, currentPage, totalRecord, show } = this.state;
     
+    let nextPage = -1
+    if(activeSlide == 0){
+      nextPage = (currentPage - 1) <= 0 ? 1 : currentPage - 1
+    } else if (activeSlide == 9) {
+      nextPage = (currentPage + 1) > (totalRecord / 10) ? currentPage : currentPage + 1
+    }
+    else{
+      nextPage = currentPage
+    }
     return (
       <div  onKeyDown={this.onKeyPressed} tabIndex="0" >
         
-        <h2>Slider Testing</h2>
-
+        <Search placeholder="input search text" onSearch={value => this.onSearch(value)} enterButton style={{margin: 32}} />
         <Slider
-          asNavFor={this.state.nav2}
+          asNavFor={nav2}
           ref={slider => (this.slider1 = slider)}
           adaptiveHeight= {true}
           beforeChange = {(current, next) => this.setState({ activeSlide: next })}
           afterChange = {current => this.setState({ activeSlide2: current })}
         >
-           {this.state.show.map(data => {
+           {show.map(data => {
                 return (
-                  <div>
-                    <img src={data.img}/>
+                  <div style={{margin: 32}}>
+                    <img src={data.img} style={{ display: 'inline' }}/>
+                    <div style={{margin: 32}}> 
                     <div>{data.title }</div>
                     <div>{data.subTitle}</div>
                     <div>{data.issueOn}</div>
+                    </div>
                   </div>
                   )
             })}
          
         </Slider>
         <Slider
-          asNavFor={this.state.nav1}
+          asNavFor={nav1}
           ref={slider => (this.slider2 = slider)}
           swipeToSlide={true}
           focusOnSelect={true}
           {...thumnailSetting}
         >
-          {this.state.show.map(data => {
+          {show.map(data => {
                 return <img src={data.thumb}/>
             })}
         </Slider>
-        <Pagination onChange={this.onPageChange} defaultCurrent={1} total={myData.length} />
+        <Pagination showQuickJumper onChange={this.onPageChange} total={totalRecord}  />
       </div>
     );
   }
 
   onPageChange=(page, pageSize) =>{
     this.setState({show:this.state.data[page-1]})
+    this.setState({currentPage: page})
   }
   
 
   onKeyPressed(e) {
-    if(e.keyCode === 37){ //left
-      this.slider2.slickPrev()
-    } else if(e.keyCode === 39){//right
-      this.slider2.slickNext()
+    if(this){
+      if(e.keyCode === 37){ //left
+        this.slider2.slickPrev()
+      } else if(e.keyCode === 39){//right
+        this.slider2.slickNext()
+      }
     }
+    
   }
 
   onSearchFlag = (name) => {
@@ -138,6 +155,23 @@ export default class ImgSlide extends Component {
   }
   
   onSearch = searchText => {
+    if(searchText === ''){
+      this.setState({data : _.chunk(myData,10),totalRecord: myData.length})
+    } else {
+      const dataSearch =  myData.filter( data => {
+        return  data.title.startsWith(searchText.toUpperCase())
+      })
+      if(dataSearch.length > 0){
+        this.setState({data : _.chunk(dataSearch,10),
+          totalRecord: dataSearch.length})
+          message.info( dataSearch.length +  ' fake visa found :D. Enter or click search again to show LOL');  
+      } else { //default
+        this.setState({data : _.chunk(myData,10),totalRecord: myData.length})
+        message.warning('There id no match fake visa!');
+      }
+      
+    }
+    this.setState({show: this.state.data[0]})
   };
 
   onChange = value => {
@@ -145,6 +179,7 @@ export default class ImgSlide extends Component {
     this.setState({
       dataSource: !value ? [] : this.onSearchFlag(value),
     });
+    
   };
 
   onSelect = value =>  {

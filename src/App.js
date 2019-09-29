@@ -1,13 +1,17 @@
 import React from 'react';
 import './App.css';
-import ImgSlide from './component/ImgSlide'
-import { Layout, Row, Col } from 'antd';
+import { Provider } from 'mobx-react'
+import { Layout, Typography } from 'antd';
 import 'antd/dist/antd.css';
-const { Header, Footer, Content } = Layout;
+import Header from './containers/Header'
+import Contain from './containers/VisaContent'
+import RootStore from './stores/RootStore'
+const { Footer, Content } = Layout;
+const { Text } = Typography;
 function App() {
   return (
     <div className="App" style={{background:'blueviolet'}}>
-      <Layout>
+      {/* <Layout>
         <Header>Header</Header>
         <Content style={{minHeight: '80vh', backgroundColor: '#95b2f1'}}>
         <Row>
@@ -18,7 +22,17 @@ function App() {
           
         </Content>
         <Footer>Footer</Footer>
+      </Layout> */}
+
+      <Provider rootStore={new RootStore()}>
+      <Layout style={{textAlign: "center"}}>
+        <Header />
+        <Content style={{minHeight: '80vh', backgroundColor: '#95b2f1'}}>
+          <Contain />
+        </Content>
+        <Footer style={{minHeight: '10vh', backgroundColor: '#95b2f1', textAlign: "center"}}><Text underline>ALL FAKE VISA</Text></Footer>
       </Layout>
+    </Provider>
     </div>
   );
 }
